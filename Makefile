@@ -1,10 +1,9 @@
-OBJS = \
+OBJS_COMMON = \
 	bio.o\
 	console.o\
 	exec.o\
 	file.o\
 	fs.o\
-	ide.o\
 	ioapic.o\
 	kalloc.o\
 	kbd.o\
@@ -28,7 +27,8 @@ OBJS = \
 	vectors.o\
 	vm.o\
 
-MEMFSOBJS = $(filter-out ide.o,$(OBJS)) memide.o
+OBJS = $(OBJS_COMMON) ide.o
+MEMFSOBJS = $(OBJS_COMMON) memide.o
 
 ULIB = ulib.o usys.o printf.o umalloc.o
 
