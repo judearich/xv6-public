@@ -28,6 +28,27 @@ OBJS = \
 	vectors.o\
 	vm.o\
 
+MEMFSOBJS = $(filter-out ide.o,$(OBJS)) memide.o
+
+ULIB = ulib.o usys.o printf.o umalloc.o
+
+UPROGS=\
+	_cat\
+	_echo\
+	_forktest\
+	_grep\
+	_init\
+	_kill\
+	_ln\
+	_ls\
+	_mkdir\
+	_rm\
+	_sh\
+	_stressfs\
+	_usertests\
+	_wc\
+	_zombie\
+
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
 
@@ -96,7 +117,6 @@ kernel: $(OBJS) entry.o entryother initcode kernel.ld
 # exploring disk buffering implementations, but it is
 # great for testing the kernel on real hardware without
 # needing a scratch disk.
-MEMFSOBJS = $(filter-out ide.o,$(OBJS)) memide.o
 kernelmemfs: $(MEMFSOBJS) entry.o entryother initcode kernel.ld fs.img
 	$(LD) $(LDFLAGS) -T kernel.ld -o $@ entry.o  $(MEMFSOBJS) -b binary initcode entryother fs.img
 
@@ -105,8 +125,6 @@ tags: $(OBJS) entryother.S _init
 
 vectors.S: vectors.pl
 	./vectors.pl > $@
-
-ULIB = ulib.o usys.o printf.o umalloc.o
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -124,24 +142,6 @@ mkfs: mkfs.c fs.h
 # details:
 # http://www.gnu.org/software/make/manual/html_node/Chained-Rules.html
 .PRECIOUS: %.o
-
-UPROGS=\
-	_cat\
-	_echo\
-	_forktest\
-	_grep\
-	_init\
-	_kill\
-	_ln\
-	_ls\
-	_mkdir\
-	_rm\
-	_sh\
-	_stressfs\
-	_usertests\
-	_wc\
-	_zombie\
-
 fs.img: mkfs README $(UPROGS)
 	./mkfs $@ README $(UPROGS)
 
